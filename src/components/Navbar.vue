@@ -267,7 +267,7 @@ export default {
             }else{
                 var that= this
             this.$axios({
-                url:'/register/userRegister?username='+that.reusername+'&password='+that.repassword+'$realname'+that.rename,
+                url:'/register/userRegister?username='+that.reusername+'&password='+that.repassword+'&realname'+that.rename,
                 method:'get'
             })
             .then(res=>{
