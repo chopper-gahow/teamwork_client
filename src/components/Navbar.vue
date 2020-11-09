@@ -45,6 +45,8 @@
         <el-input v-model="repassword" placeholder="请输入密码" type="password"></el-input>
         确认密码
         <el-input v-model="arepassword" placeholder="请重新输入密码" type="password"></el-input>
+        姓名
+        <el-input v-model="rename" placeholder="输入姓名"></el-input>
         <span slot="footer" class="dialog-footer">
             <el-button @click="centerDialogVisible3 = false">取 消</el-button>
             <el-button type="primary" @click="register">确 定</el-button>
@@ -140,6 +142,7 @@ export default {
             reusername:'',
             repassword:'',
             arepassword:'',
+            rename:'',
             centerDialogVisible3:false,
             title:'',
             content:'',
@@ -189,32 +192,6 @@ export default {
         quillEditor
     },
     methods:{
-        cropSuccess(){
-            console.log('read tp upload');
-        },
-        handleAvatarSuccess(res, file) {
-            var that = this
-            try {
-                this.imageUrl = file.raw;
-            } catch (error) {
-                this.imageUrl = window.URL.createObjectURL(file.raw);
-            }
-            this.$axios({
-                method:"get",
-                url:'/personal/editheadimg?headimg=http://hchopper.top/'+res.hash,
-            }).then(ress=>{
-                sessionStorage.setItem('headimg',ress.data.data.headimg)
-                that.$store.state.headimg=sessionStorage.getItem('headimg')
-                location.reload()  
-            })
-            .then(()=>{
-                this.$message({
-                        showClose: true,
-                        message: '头像修改成功',
-                        type: 'success'
-                        });
-            })
-        },
         upload(){
             var that = this
             this.$axios.post('/study/uploadnew',{
@@ -290,7 +267,7 @@ export default {
             }else{
                 var that= this
             this.$axios({
-                url:'/register/userRegister?username='+that.reusername+'&password='+that.repassword,
+                url:'/register/userRegister?username='+that.reusername+'&password='+that.repassword+'$realname'+that.rename,
                 method:'get'
             })
             .then(res=>{

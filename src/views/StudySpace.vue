@@ -480,8 +480,6 @@ export default {
       font-weight: 500;
       text-align: left;
   }
-  #feedback_button{
-  }
   #myitemfeedback{
       width: 340px;
       height: 30px;
