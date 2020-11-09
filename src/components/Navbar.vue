@@ -14,6 +14,7 @@
         <div id="navinfo" v-if="!islogin">
             <i class="el-icon-s-home" style="font-weight:bolder" @click="gohome"> 首页</i>
             <div id="logindiv">
+                <div  style="font-weight:bolder" @click="registeradmin"> 立即注册</div>
                 <div  style="font-weight:bolder" @click="loginadmin"> 立即登陆</div>
             </div>
 
@@ -31,6 +32,22 @@
         <span slot="footer" class="dialog-footer">
             <el-button @click="centerDialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="login">确 定</el-button>
+        </span>
+        </el-dialog>
+        <el-dialog
+        title="登陆"
+        :visible.sync="centerDialogVisible3"
+        width="50%"
+        center>
+        账号
+        <el-input v-model="reusername" placeholder="请输入内容"></el-input>
+        密码
+        <el-input v-model="repassword" placeholder="请输入密码" type="password"></el-input>
+        确认密码
+        <el-input v-model="arepassword" placeholder="请重新输入密码" type="password"></el-input>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="centerDialogVisible3 = false">取 消</el-button>
+            <el-button type="primary" @click="register">确 定</el-button>
         </span>
         </el-dialog>
         <el-dialog
@@ -95,6 +112,7 @@ import { quillEditor } from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
+import myUpload from 'vue-image-crop-upload';
 var fonts = ['SimSun','SimHei','Microsoft-YaHei','KaiTi','FangSong','Arial','Times-New-Roman','sans-serif'];
 var Font = Quill.import('formats/font');
 Font.whitelist = fonts; //将字体加入到白名单 
@@ -119,6 +137,10 @@ const toolbarOptions = [
 export default {
     data(){
         return{
+            reusername:'',
+            repassword:'',
+            arepassword:'',
+            centerDialogVisible3:false,
             title:'',
             content:'',
             fengcaiclass:'',
@@ -167,6 +189,32 @@ export default {
         quillEditor
     },
     methods:{
+        cropSuccess(){
+            console.log('read tp upload');
+        },
+        handleAvatarSuccess(res, file) {
+            var that = this
+            try {
+                this.imageUrl = file.raw;
+            } catch (error) {
+                this.imageUrl = window.URL.createObjectURL(file.raw);
+            }
+            this.$axios({
+                method:"get",
+                url:'/personal/editheadimg?headimg=http://hchopper.top/'+res.hash,
+            }).then(ress=>{
+                sessionStorage.setItem('headimg',ress.data.data.headimg)
+                that.$store.state.headimg=sessionStorage.getItem('headimg')
+                location.reload()  
+            })
+            .then(()=>{
+                this.$message({
+                        showClose: true,
+                        message: '头像修改成功',
+                        type: 'success'
+                        });
+            })
+        },
         upload(){
             var that = this
             this.$axios.post('/study/uploadnew',{
@@ -234,6 +282,37 @@ export default {
             })
             
             },
+        register(){
+            if(this.reusername === '' || this.repassword === '' || this.arepassword === ''){
+                this.$message.error('请完成注册信息的填写');
+            }else if(this.repassword !== this.arepassword){
+                this.$message.error('两次输入的密码不一致');
+            }else{
+                var that= this
+            this.$axios({
+                url:'/register/userRegister?username='+that.reusername+'&password='+that.repassword,
+                method:'get'
+            })
+            .then(res=>{
+                console.log(res);
+                if(res.data.code==200){
+                    this.$message({
+                        showClose: true,
+                        message: res.data.msg,
+                        type: 'success'
+                        });
+                    this.centerDialogVisible3 = false
+                }
+                else if(res.data.code==201){
+                    this.$message.error(res.data.msg);
+                }
+                
+            })
+            .catch(error=>{
+                console.log(error);
+                console.log('请求失败')})   
+            }
+        },
         login(){
             var that = this
             this.$axios({
@@ -276,6 +355,9 @@ export default {
         },
         loginadmin(){
             this.centerDialogVisible = true
+        },
+        registeradmin(){
+            this.centerDialogVisible3 = true
         },
         gohome(){
             this.$router.push({name:"Home"})
