@@ -260,14 +260,14 @@ export default {
             
             },
         register(){
-            if(this.reusername === '' || this.repassword === '' || this.arepassword === ''){
+            if(this.reusername === '' || this.repassword === '' || this.arepassword === '' || this.rename === ''){
                 this.$message.error('请完成注册信息的填写');
             }else if(this.repassword !== this.arepassword){
                 this.$message.error('两次输入的密码不一致');
             }else{
                 var that= this
             this.$axios({
-                url:'/register/userRegister?username='+that.reusername+'&password='+that.repassword+'&realname'+that.rename,
+                url:'/register/userRegister?username='+that.reusername+'&password='+that.repassword+'&realname='+that.rename,
                 method:'get'
             })
             .then(res=>{
