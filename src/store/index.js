@@ -12,6 +12,7 @@ export default new Vuex.Store({
     isLogin:sessionStorage.getItem('isLogin'),
     jurisdiction:sessionStorage.getItem('jurisdiction'),
     role:sessionStorage.getItem('role'),
+    class:sessionStorage.getItem('class'),
   },
   mutations: {
   },

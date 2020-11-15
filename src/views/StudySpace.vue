@@ -174,14 +174,19 @@ export default {
         selectthis(row){
           this.$axios({
             method:"get",
-            url:`/user/addclass?classid=${row._id}`
+            url:`/user/chooseclass?classid=${row._id}&username=${sessionStorage.getItem('username')}`
           })
           .then(res=>{
-            this.$message({
+            if (res.data.code == 200){
+              this.$message({
                     showClose: true,
                     message: res.data.msg,
                     type: 'success'
                     });
+            }
+            else if (res.data.code == 201){
+              this.$message.error(res.data.msg);
+            }
           })
         },
         feedback(id){
@@ -227,10 +232,11 @@ export default {
           })
         this.$axios({
           method:'get',
-          url:'/class/findall'
+          url:'/class/findbyclass?class='+sessionStorage.getItem('class')
         })
         .then(res=>{
           this.allclasses = res.data.data
+          console.log(this.allclasses,'_____');
         })
         this.$axios({
           method:'get',

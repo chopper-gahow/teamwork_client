@@ -14,7 +14,6 @@
         <div id="navinfo" v-if="!islogin">
             <i class="el-icon-s-home" style="font-weight:bolder" @click="gohome"> 首页</i>
             <div id="logindiv">
-                <div  style="font-weight:bolder" @click="registeradmin"> 立即注册</div>
                 <div  style="font-weight:bolder" @click="loginadmin"> 立即登陆</div>
             </div>
 
@@ -317,6 +316,7 @@ export default {
                     this.$store.state.role=res.data.data.role
                     this.$store.state.headimg=res.data.data.headimg
                     this.$store.state.jurisdiction=res.data.data.jurisdiction
+                    this.$store.state.class=res.data.data.jurisdiction
                     this.$store.state.isLogin=true
                     localStorage.setItem('username',res.data.data.username)
                     sessionStorage.setItem('username',res.data.data.username)
@@ -326,6 +326,7 @@ export default {
                     sessionStorage.setItem('realname',res.data.data.realname)
                     sessionStorage.setItem('jurisdiction',res.data.data.jurisdiction)
                     sessionStorage.setItem('role',res.data.data.role)
+                    sessionStorage.setItem('class',res.data.data.class)
                     location.reload()
                 }
             })
